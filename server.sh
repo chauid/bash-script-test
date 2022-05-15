@@ -106,7 +106,7 @@ echo "도메인 이름 설정(8/11)"
 read -p "도메인 이름(.com 제외|ex:john) : " DomainName
 printf "zone \"$DomainName.com\" IN {\n" >>  /etc/bind/named.conf
 printf "\ttype master;\n" >> /etc/bind/named.conf
-printf "file /etc/bind/$DomainName.com.db;\n" >> /etc/bind/named.conf
+printf "file \"/etc/bind/$DomainName.com.db\";\n" >> /etc/bind/named.conf
 printf "};\n" >> /etc/bind/named.conf
 echo "도메인 포워드존 설정(9/11)"
 read -p "FTP 서버의 IP : " FTPserverIP
@@ -118,7 +118,7 @@ printf "@\tIN\tNS\t@\n" >> /etc/bind/$DomainName.com.db
 printf "\tIN\tA\t$currentIP\n" >> /etc/bind/$DomainName.com.db
 printf "\n" >> /etc/bind/$DomainName.com.db
 printf "www\tIN\tA\t$currentIP\n" >> /etc/bind/$DomainName.com.db
-printf "\"ftp\tIN\tA\t$FTPserverIP\"\n" >> /etc/bind/$DomainName.com.db
+printf "ftp\tIN\tA\t$FTPserverIP\n" >> /etc/bind/$DomainName.com.db
 echo "apache2 서비스 시작(10/11)"
 systemctl restart apache2 > /dev/null
 systemctl enable apache2 > /dev/null
