@@ -21,6 +21,7 @@ if [ "$ins_bind9" == "ii" ]; then
 else
     echo "bind9설치 안됨."
     read -s -n 1 -p "bind9 패키지를 설치합니다. 계속하려면 아무키나 누르세요."
+    printf "\n"
     echo "bind9 설치중... (설치중에 터미널을 끄지 마세요.)"
     apt-get install -y bind9 > /dev/null
 fi
@@ -29,6 +30,7 @@ if [ "$ins_bind9utils" == "ii" ]; then
 else
     echo "bind9utils 설치 안됨."
     read -s -n 1 -p "bind9utils 패키지를 설치합니다. 계속하려면 아무키나 누르세요."
+    printf "\n"
     echo "bind9utils 설치중... (설치중에 터미널을 끄지 마세요.)"
     apt-get install -y bind9utils > /dev/null
 fi
@@ -36,7 +38,8 @@ if [ "$ins_apache2" == "ii" ]; then
     echo "apache2 설치됨."
 else
     echo "apache2 설치 안됨."
-    read -s -n 1 -p "bind9 패키지를 설치합니다. 계속하려면 아무키나 누르세요."
+    read -s -n 1 -p "apache2 패키지를 설치합니다. 계속하려면 아무키나 누르세요."
+    printf "\n"
     echo "apache2 설치중... (설치중에 터미널을 끄지 마세요.)"
     apt-get install -y apache2 > /dev/null
 fi
@@ -52,9 +55,9 @@ sed -i "/^nameserver/s/.*/nameserver $currentIP/g" /etc/resolv.conf
 printf "/etc/resolv.conf 파일 "
 printf "%s\n" "$(cat /etc/resolv.conf | grep nameserver)"
 echo "named.conf.options 파일 설정(3/11)"
-sed -i '/^\tdnssec-validation/s/.*/dnssec-validation no;\n\trecursion yes;\n\tallow-query { any; };/g' /etc/bind/named.conf.options
+sed -i '/^\tdnssec-validation/s/.*/\tdnssec-validation no;\n\trecursion yes;\n\tallow-query { any; };/g' /etc/bind/named.conf.options
 namedrow=$(cat -n /etc/bind/named.conf.options | grep dnssec-validation | cut -c 6) > /dev/null
-sed -n "$namedrow, $((namedrow+1)), $((named+2))" /etc/bind/named.conf.options
+sed -n "$namedrow, $((named+2))"p /etc/bind/named.conf.options
 echo "방화벽 설정(4/11)"
 ufw allow 53 > /dev/null
 echo "53번 포트 허용"
@@ -85,36 +88,38 @@ fi
 echo "웹페이지 Default 설정(7/11)"
 read -p "생성할 웹페이지 제목 : " indextitle
 cd /var/www/html
-mv index.html backup_index.bak
+if [ -f "./index.html" ]; then
+  mv index.html backup_index.bak
+fi
 touch index.html
-echo "<!DOCTYPE html>" >> index.html
-echo "<html>" >> index.html
-echo "<head>" >> index.html
-echo "\t<meta charset=\"utf-8\">" >> index.html
-echo "\t<title>$indextitle</title>" >> index.html
-echo "</head>" >> index.html
-echo "<body>" >> index.html
-echo "\t<h1>Ubuntu 20.04 LTS test Web server</h1>" >> index.html
-echo "\t<p>You can modify this file in /var/www/html/index.html</p>" >> index.html
-echo "</body>" >> index.html
-echo "</html>" >> index.html
+printf "<!DOCTYPE html>\n" >> index.html
+printf "<html>\n" >> index.html
+printf"<head>\n" >> index.html
+printf  "\t<meta charset=\"utf-8\">\n" >> index.html
+printf "\t<title>$indextitle</title>\n" >> index.html
+printf "</head>\n" >> index.html
+printf "<body>\n" >> index.html
+printf "\t<h1>Ubuntu 20.04 LTS test Web server</h1>\n" >> index.html
+printf "\t<p>You can modify this file in /var/www/html/index.html</p>\n" >> index.html
+printf "</body>\n" >> index.html
+printf "</html>\n" >> index.html
 echo "도메인 이름 설정(8/11)"
 read -p "도메인 이름(.com 제외|ex:john) : " DomainName
-echo "zone \"$DomainName.com\" IN {" >>  /etc/bind/named.conf
-echo "/ttype master;" >> /etc/bind/named.conf
-echo "file /etc/bind/$DomainName.com.db;" >> /etc/bind/named.conf
-echo "};" >> /etc/bind/named.conf
+printf "zone \"$DomainName.com\" IN {\n" >>  /etc/bind/named.conf
+printf "\ttype master;\n" >> /etc/bind/named.conf
+printf "file /etc/bind/$DomainName.com.db;\n" >> /etc/bind/named.conf
+printf "};\n" >> /etc/bind/named.conf
 echo "도메인 포워드존 설정(9/11)"
 read -p "FTP 서버의 IP : " FTPserverIP
 touch /etc/bind/$DomainName.com.db
-echo "\$TTL\t3H" >> /etc/bind/$DomainName.com.db
-echo "@\tIN\tSOA\t@\troot.\t( 2 1D 1H 1W 1H )" >> /etc/bind/$DomainName.com.db
-echo "" >> /etc/bind/$DomainName.com.db
-echo "@\tIN\tNS\t@" >> /etc/bind/$DomainName.com.db
-echo "\tIN\tA\t$currentIP" >> /etc/bind/$DomainName.com.db
-echo "" >> /etc/bind/$DomainName.com.db
-echo "www\tIN\tA\t$currentIP" >> /etc/bind/$DomainName.com.db
-echo "ftp\tIN\tA\t$FTPserverIP" >> /etc/bind/$DomainName.com.db
+printf "\$TTL\t3H\n" >> /etc/bind/$DomainName.com.db
+printf "@\tIN\tSOA\t@\troot.\t( 2 1D 1H 1W 1H )\n" >> /etc/bind/$DomainName.com.db
+printf "\n" >> /etc/bind/$DomainName.com.db
+printf "@\tIN\tNS\t@\n" >> /etc/bind/$DomainName.com.db
+printf "\tIN\tA\t$currentIP\n" >> /etc/bind/$DomainName.com.db
+printf "\n" >> /etc/bind/$DomainName.com.db
+printf "www\tIN\tA\t$currentIP\n" >> /etc/bind/$DomainName.com.db
+printf "ftp\tIN\tA\t$FTPserverIP\n" >> /etc/bind/$DomainName.com.db
 echo "apache2 서비스 시작(10/11)"
 systemctl restart apache2 > /dev/null
 systemctl enable apache2 > /dev/null
