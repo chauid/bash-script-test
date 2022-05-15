@@ -22,14 +22,14 @@ echo "Firewall Check(2/5)"
 ufw allow 21 > /dev/null
 echo "Set welcome msg(3/5)"
 cd /srv/ftp
-if [ ! -f "./welcoome.msg" ]; then
+if [ ! -f "./welcome.msg" ]; then
   touch welcome.msg
   echo "#######################################" >> welcome.msg
   echo "Welcome !!! Ubuntu 20.04 LTS FTP Server" >> welcome.msg
   echo "#######################################" >> welcome.msg
 fi
 echo "/etc/vsftpd.conf modify(4/5)"
-sed -i '/^anonymous_enable/s/.*/anonymous_enable=YES\nbanner_file=/srv/ftp/welcome.msg/g' /etc/vsftpd.conf
+sed -i '/^anonymous_enable/s/.*/anonymous_enable=YES\nbanner_file=\/srv\/ftp\/welcome.msg/g' /etc/vsftpd.conf
 echo "Start vsftpd service(5/5)"
 systemctl restart vsftpd > /dev/null
 systemctl enable vsftpd > /dev/null
