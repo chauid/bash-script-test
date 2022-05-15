@@ -93,8 +93,8 @@ fi
 touch index.html
 printf "<!DOCTYPE html>\n" >> index.html
 printf "<html>\n" >> index.html
-printf"<head>\n" >> index.html
-printf  "\t<meta charset=\"utf-8\">\n" >> index.html
+printf "<head>\n" >> index.html
+printf "\t<meta charset=\"utf-8\">\n" >> index.html
 printf "\t<title>$indextitle</title>\n" >> index.html
 printf "</head>\n" >> index.html
 printf "<body>\n" >> index.html
