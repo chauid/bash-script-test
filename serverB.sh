@@ -13,19 +13,21 @@ if [ "$ins_vsftpd" == "ii" ]; then
 else
     echo "vsftpd pakage is not installed."
     read -s -n 1 -p "Install vsftpd. Press any key to continue."
-    apt-get install vsftpd -y vsftpd
+    apt-get install vsftpd -y vsftpd > /dev/null
 fi
 echo "Firewall Check(2/4)"
 ufw allow 21
 echo "Set welcome msg(3/4)"
 cd /srv/ftp
-touch welcome.msg
-echo "###########################" >> welcome.msg
-echo "Welcome !!! Ubuntu 20.04 LTS FTP Server" >> welcome.msg
-echo "###########################" >> welcome.msg
+if [ ! -f ./welcoome.msg ]; then
+  touch welcome.msg
+  echo "###########################" >> welcome.msg
+  echo "Welcome !!! Ubuntu 20.04 LTS FTP Server" >> welcome.msg
+  echo "###########################" >> welcome.msg
+fi
 echo "Start vsftpd service(4/4)"
-systemctl restart vsftpd
-systemctl enable vsftpd
+systemctl restart vsftpd > /dev/null
+systemctl enable vsftpd > /dev/null
 StatusFTP=$(systemctl status vsftpd | grep Active | cut -d ' ' -f 7)
 if [ "$StatusFTP" == "active" ]; then
     echo "vsftpd is active."
