@@ -118,7 +118,7 @@ printf "@\tIN\tNS\t@\n" >> /etc/bind/$DomainName.com.db
 printf "\tIN\tA\t$currentIP\n" >> /etc/bind/$DomainName.com.db
 printf "\n" >> /etc/bind/$DomainName.com.db
 printf "www\tIN\tA\t$currentIP\n" >> /etc/bind/$DomainName.com.db
-printf "ftp\tIN\tA\t$FTPserverIP\n" >> /etc/bind/$DomainName.com.db
+printf "\"ftp\tIN\tA\t$FTPserverIP\"\n" >> /etc/bind/$DomainName.com.db
 echo "apache2 서비스 시작(10/11)"
 systemctl restart apache2 > /dev/null
 systemctl enable apache2 > /dev/null
