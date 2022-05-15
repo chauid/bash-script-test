@@ -57,7 +57,6 @@ printf "%s\n" "$(cat /etc/resolv.conf | grep nameserver)"
 echo "named.conf.options 파일 설정(3/11)"
 sed -i '/^\tdnssec-validation/s/.*/\tdnssec-validation no;\n\trecursion yes;\n\tallow-query { any; };/g' /etc/bind/named.conf.options
 namedrow=$(cat -n /etc/bind/named.conf.options | grep dnssec-validation | cut -c 6) > /dev/null
-sed -n "$namedrow, $((named+2))"p /etc/bind/named.conf.options
 echo "방화벽 설정(4/11)"
 ufw allow 53 > /dev/null
 echo "53번 포트 허용"
