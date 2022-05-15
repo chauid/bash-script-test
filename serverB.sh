@@ -21,7 +21,7 @@ echo "Firewall Check(2/4)"
 ufw allow 21 > /dev/null
 echo "Set welcome msg(3/4)"
 cd /srv/ftp
-if [ ! -f ./welcoome.msg ]; then
+if [ ! -f "./welcoome.msg" ]; then
   touch welcome.msg
   echo "###########################" >> welcome.msg
   echo "Welcome !!! Ubuntu 20.04 LTS FTP Server" >> welcome.msg
@@ -37,3 +37,4 @@ else
     echo "Error : vsftpd is not active"
     exit
 fi
+echo "##########Auto Install Complete!##########"
