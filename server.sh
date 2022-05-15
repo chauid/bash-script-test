@@ -22,7 +22,7 @@ else
     echo "bind9설치 안됨."
     read -s -n 1 -p "bind9 패키지를 설치합니다. 계속하려면 아무키나 누르세요."
     echo "bind9 설치중... (설치중에 터미널을 끄지 마세요.)"
-    apt-get install -y bind9
+    apt-get install -y bind9 > /dev/null
 fi
 if [ "$ins_bind9utils" == "ii" ]; then
     echo "bind9utils 설치됨."
@@ -30,7 +30,7 @@ else
     echo "bind9utils 설치 안됨."
     read -s -n 1 -p "bind9utils 패키지를 설치합니다. 계속하려면 아무키나 누르세요."
     echo "bind9utils 설치중... (설치중에 터미널을 끄지 마세요.)"
-    apt-get install -y bind9utils
+    apt-get install -y bind9utils > /dev/null
 fi
 if [ "$ins_apache2" == "ii" ]; then
     echo "apache2 설치됨."
@@ -38,7 +38,7 @@ else
     echo "apache2 설치 안됨."
     read -s -n 1 -p "bind9 패키지를 설치합니다. 계속하려면 아무키나 누르세요."
     echo "apache2 설치중... (설치중에 터미널을 끄지 마세요.)"
-    apt-get install -y apache2
+    apt-get install -y apache2 > /dev/null
 fi
 echo "네임서버의 IP설정(2/11)"
 currentIP=$(ifconfig | sed -n '/broadcast/p' | cut -d ' ' -f 10) > /dev/null
@@ -51,10 +51,10 @@ backupDNS=$(grep nameserver /etc/resolv.conf) > /dev/null
 sed -i "/^nameserver/s/.*/nameserver $currentIP/g" /etc/resolv.conf
 printf "/etc/resolv.conf 파일 "
 printf "%s\n" "$(cat /etc/resolv.conf | grep nameserver)"
-echo "named.conf.option 파일 설정(3/11)"
-sed -i '/^\tdnssec-validation/s/.*/dnssec-validation no;\n\trecursion yes;\n\tallow-query { any; };/g' /etc/bind/named.conf.option
-namedrow=$(cat -n /etc/bind/named.conf.option | grep dnssec-validation | cut -c 6) > /dev/null
-sed -n "$namedrow, $((namedrow+1)), $((named+2))" /etc/bind/named.conf.option
+echo "named.conf.options 파일 설정(3/11)"
+sed -i '/^\tdnssec-validation/s/.*/dnssec-validation no;\n\trecursion yes;\n\tallow-query { any; };/g' /etc/bind/named.conf.options
+namedrow=$(cat -n /etc/bind/named.conf.options | grep dnssec-validation | cut -c 6) > /dev/null
+sed -n "$namedrow, $((namedrow+1)), $((named+2))" /etc/bind/named.conf.options
 echo "방화벽 설정(4/11)"
 ufw allow 53 > /dev/null
 echo "53번 포트 허용"
@@ -63,8 +63,8 @@ echo "21번 포트 허용"
 ufw allow 80 > /dev/null
 echo "80번 포트 허용"
 echo "named 서비스 시작(5/11)"
-systemctl restart named
-systemctl enable named
+systemctl restart named > /dev/null
+systemctl enable named > /dev/null
 StatusNamed=$(systemctl status named | grep Active | cut -d ' ' -f 7) > /dev/null
 if [ "$StatusNamed" == "active" ]; then
     echo "named 서비스 정상 작동중."
@@ -74,7 +74,7 @@ else
 fi
 echo "네임서버  작동 확인(6/11)"
 echo "테스트할 URL : www.google.com"
-is_workURL=$(nslookup www.google.com | cut -d ' ' -f 1) > dev/null
+is_workURL=$(nslookup www.google.com | cut -d ' ' -f 1)
 if [ "$is_workURL" == ";;" ]; then
     echo "네임서버가 작동하지 않음."
     sed -i "/^nameserver/s/nameserver $backupDNS/g" /etc/resolv.conf
@@ -116,8 +116,8 @@ echo "" >> /etc/bind/$DomainName.com.db
 echo "www\tIN\tA\t$currentIP" >> /etc/bind/$DomainName.com.db
 echo "ftp\tIN\tA\t$FTPserverIP" >> /etc/bind/$DomainName.com.db
 echo "apache2 서비스 시작(10/11)"
-systemctl restart apache2
-systemctl enable apache2
+systemctl restart apache2 > /dev/null
+systemctl enable apache2 > /dev/null
 Statusapache2=$(systemctl status apache2 | grep Active | cut -d ' ' -f 7) > /dev/null
 if [ "$Statusapache2" == "active" ]; then
     echo "apache2 서비스 정상 작동중."
@@ -126,8 +126,8 @@ else
     exit
 fi
 echo "bind9 서비스 시작(11/11)"
-systemctl restart bind9
-systemctl enable bind9
+systemctl restart bind9 > /dev/null
+systemctl enable bind9 > /dev/null
 Statusbind9=$(systemctl status bind9 | grep Active | cut -d ' ' -f 7) > /dev/null
 if [ "$Statusbind9" == "active" ]; then
     echo "bind9 서비스 정상 작동중."
