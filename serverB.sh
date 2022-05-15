@@ -8,7 +8,7 @@ echo "Chapter 09 [Nameserver install and operation]"
 echo "Excute in Server(B)"
 echo "Pakage Check(1/4)"
 ins_vsftpd=$(dpkg -l vsftpd 2> /dev/null | grep ii | cut -d ' ' -f 1)
-if [ $ins_vsftpd == "ii" ]; then
+if [ "$ins_vsftpd" == "ii" ]; then
     echo "vsftpd pakage is installed."
 else
     echo "vsftpd pakage is not installed."
@@ -27,7 +27,7 @@ echo "Start vsftpd service(4/4)"
 systemctl restart vsftpd
 systemctl enable vsftpd
 StatusFTP=$(systemctl status vsftpd | grep Active | cut -d ' ' -f 7)
-if [ $StatusFTP == "active" ]; then
+if [ "$StatusFTP" == "active" ]; then
     echo "vsftpd is active."
 else
     echo "Error : vsftpd is not active"
