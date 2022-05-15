@@ -13,10 +13,11 @@ if [ "$ins_vsftpd" == "ii" ]; then
 else
     echo "vsftpd pakage is not installed."
     read -s -n 1 -p "Install vsftpd. Press any key to continue."
+    echo "installing vsftpd... (Do not close terminal is installing)"
     apt-get install vsftpd -y vsftpd > /dev/null
 fi
 echo "Firewall Check(2/4)"
-ufw allow 21
+ufw allow 21 > /dev/null
 echo "Set welcome msg(3/4)"
 cd /srv/ftp
 if [ ! -f ./welcoome.msg ]; then
