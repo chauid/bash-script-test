@@ -13,6 +13,7 @@ if [ "$ins_vsftpd" == "ii" ]; then
 else
     echo "vsftpd pakage is not installed."
     read -s -n 1 -p "Install vsftpd. Press any key to continue."
+    printf "\n"
     echo "installing vsftpd... (Do not close terminal is installing)"
     apt-get install vsftpd -y vsftpd > /dev/null
 fi
