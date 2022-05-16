@@ -29,7 +29,12 @@ if [ ! -f "./welcome.msg" ]; then
   echo "#######################################" >> welcome.msg
 fi
 echo "/etc/vsftpd.conf modify(4/5)"
-sed -i '/^anonymous_enable/s/.*/anonymous_enable=YES\nbanner_file=\/srv\/ftp\/welcome.msg/g' /etc/vsftpd.conf
+is_banner=$(cat /etc/vsftpd.conf | grep anonymous_enable | cut -c 18-20)
+if [ "$is_banner" == "YES" ]; then
+  echo "banner is Already set."
+else
+  sed -i '/^anonymous_enable/s/.*/anonymous_enable=YES\nbanner_file=\/srv\/ftp\/welcome.msg/g' /etc/vsftpd.conf
+fi
 echo "Start vsftpd service(5/5)"
 systemctl restart vsftpd > /dev/null
 systemctl enable vsftpd > /dev/null
