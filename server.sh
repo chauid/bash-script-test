@@ -55,8 +55,13 @@ sed -i "/^nameserver/s/.*/nameserver $currentIP/g" /etc/resolv.conf
 printf "/etc/resolv.conf 파일 "
 printf "%s\n" "$(cat /etc/resolv.conf | grep nameserver)"
 echo "named.conf.options 파일 설정(3/11)"
-sed -i '/^\tdnssec-validation/s/.*/\tdnssec-validation no;\n\trecursion yes;\n\tallow-query { any; };/g' /etc/bind/named.conf.options
-namedrow=$(cat -n /etc/bind/named.conf.options | grep dnssec-validation | cut -c 6) > /dev/null
+is_setoptions=$(cat /etc/bind/named.conf.options | grep dnssec | cut -d ' ' -f 2)
+if [ "$is_setoptions" == "no;" ]; then
+    echo "Already setting /etc/bind/named.conf.options"
+else
+    sed -i '/^\tdnssec-validation/s/.*/\tdnssec-validation no;\n\trecursion yes;\n\tallow-query { any; };/g' /etc/bind/named.conf.options
+fi
+namedrow=$(cat -n /etc/bind/named.conf.options | grep dnssec | cut -c 6) > /dev/null
 echo "방화벽 설정(4/11)"
 ufw allow 53 > /dev/null
 echo "53번 포트 허용"
@@ -88,7 +93,7 @@ echo "웹페이지 Default 설정(7/11)"
 read -p "생성할 웹페이지 제목 : " indextitle
 cd /var/www/html
 if [ -f "./index.html" ]; then
-  mv index.html backup_index.bak
+  mv -f index.html backup_index.bak
 fi
 touch index.html
 printf "<!DOCTYPE html>\n" >> index.html
