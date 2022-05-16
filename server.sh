@@ -81,8 +81,8 @@ else
 fi
 echo "네임서버  작동 확인(6/11)"
 echo "테스트할 URL : www.naver.com"
-is_workURL=$(nslookup www.naver.com | cut -d ' ' -f 1)
-if [ "$is_workURL" == ";;" ]; then
+is_workURL=$(nslookup www.naver.com | head -1 | cut -c 1-2)
+if [ "$is_workURL" != "Se" ]; then
     echo "네임서버가 작동하지 않음."
     sed -i "/^nameserver/s/nameserver $backupDNS/g" /etc/resolv.conf
     exit
