@@ -61,7 +61,6 @@ if [ "$is_setoptions" == "no;" ]; then
 else
     sed -i '/^\tdnssec-validation/s/.*/\tdnssec-validation no;\n\trecursion yes;\n\tallow-query { any; };/g' /etc/bind/named.conf.options
 fi
-namedrow=$(cat -n /etc/bind/named.conf.options | grep dnssec | cut -c 6) > /dev/null
 echo "방화벽 설정(4/11)"
 ufw allow 53 > /dev/null
 echo "53번 포트 허용"
