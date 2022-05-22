@@ -1,0 +1,29 @@
+#server install
+#1.패키지 확인 bind9, bind9utils, sendmail, dovecot-pop3d
+#2.메일서버 이름 설정
+#3.호스트 이름 변경 /etc/hostsname /etc/hosts /etc/mail/local-host-names
+#4./etc/bind/named.conf.option 파일 설정 /etc/bind/named.conf.options
+#5.메일서버 도메인 이름 설정 /etc/bind/named.conf
+#6.메일서버 도메인 포워드존 설정
+#7.방화벽 설정
+#8.네임서버 작동 확인
+#9.NetworkManager 설정
+#10.Sendmail 서버 파일 설정 /etc/mail/sendmail.cf
+#11./etc/mail/access 파일 수정
+#12.dovecot 서비스 파일 설정 /etc/dovecot/dovecot.conf /etc/dovecot/conf.d/10-mail.conf
+#13.사용자 추가
+#14.Sendmail, dovecot 서비스 시작
+#15.재부팅
+
+#server(B) install
+#1.Pakage Check sendmail, dovecot-pop3d
+#2.set mailserver name
+#3.host name setting /etc/hostname /etc/hosts /etc/mail/local-host-names 
+#4.firewall disable
+#5.Sendmail server file modify /etc/mail/sendmail.cf
+#6./etc/mail/access file modify
+#7.dovecot service file modify /etc/dovecot/dovecot.conf /etc/dovecot/conf.d/10-mail.conf
+#8.add user
+#9.Sendmail, dovecot start service
+#10.reboot
+
