@@ -92,10 +92,10 @@ echo "add user(8/10)"
 read -p "add new username : " newuser
 adduser $newuser
 echo "Sendmail, dovecot start service(9/10)"
-systenctl restart sendmail
-systenctl enable sendmail
-systenctl restart dovecot
-systenctl enable dovecot
+systemctl restart sendmail
+systemctl enable sendmail
+systemctl restart dovecot
+systemctl enable dovecot
 echo "reboot(10/10)"
 echo "##########Auto Install Complete!##########"
 echo "reboot after 10 seconds."

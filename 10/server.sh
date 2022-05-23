@@ -209,10 +209,10 @@ echo "evolution 사용자 추가(13/15)"
 read -p "추가할 사용자 이름 : " newuser
 adduser $newuser
 echo "Sendmail, dovecot 서비스 시작(14/15)"
-systenctl restart sendmail
-systenctl enable sendmail
-systenctl restart dovecot
-systenctl enable dovecot
+systemctl restart sendmail
+systemctl enable sendmail
+systemctl restart dovecot
+systemctl enable dovecot
 echo "재부팅(15/15)"
 echo "##########자동 설치 완료!##########"
 echo "10초 후 재부팅 합니다."
