@@ -185,7 +185,7 @@ else
 fi
 echo "NetworkManager 설정(9/15)"
 networkname=$(ls /etc/NetworkManager/system-connections/*.nmconnection)
-sed -i "/^dns=/s/.*/dns=$currentIP;/g" $networkname
+sed -i "/^dns=/s/.*/dns=$currentIP;/g" "$networkname"
 systemctl restart NetworkManager
 systemctl enable NetworkManager
 echo "Sendmail 서버 파일 설정(10/15)"
