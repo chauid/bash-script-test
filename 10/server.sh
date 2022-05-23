@@ -192,7 +192,7 @@ echo "Sendmail 서버 파일 설정(10/15)"
 Cwhostname=$(echo $mailservername | cut -c 6-)
 CwhostnameB=$(echo $mailserverBname | cut -c 6-)
 CwcurrentIP=$(echo $currentIP | cut -c -11)
-sed -i "/^Cw/s/.*/Cw$Cwhostname/g" /etc/mail.sendmail.cf
+sed -i "/^Cw/s/.*/Cw$Cwhostname/g" /etc/mail/sendmail.cf
 sed -i '/^O Daemon/s/, Addr=127.0.0.1/ /g' /etc/mail/sendmail.cf
 echo "/etc/mail/access 파일 수정(11/15)"
 sed -i '140,$d' /etc/mail/access

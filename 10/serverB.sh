@@ -75,7 +75,7 @@ echo "Sendmail server file modify(5/10)"
 Cwhostname=$(echo $mailservername | cut -c 6-)
 CwhostnameB=$(echo $mailserverBname | cut -c 6-)
 CwcurrentIP=$(echo $currentIP | cut -c -11)
-sed -i "/^Cw/s/.*/Cw$CwhostnameB/g" /etc/mail.sendmail.cf
+sed -i "/^Cw/s/.*/Cw$CwhostnameB/g" /etc/mail/sendmail.cf
 sed -i '/^O Daemon/s/, Addr=127.0.0.1/ /g' /etc/mail/sendmail.cf
 echo "/etc/mail/access file modify(6/10)"
 sed -i '140,$d' /etc/mail/access
