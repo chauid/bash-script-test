@@ -11,7 +11,7 @@
 #10.Sendmail 서버 파일 설정 /etc/mail/sendmail.cf
 #11./etc/mail/access 파일 수정
 #12.dovecot 서비스 파일 설정 /etc/dovecot/dovecot.conf /etc/dovecot/conf.d/10-mail.conf
-#13.사용자 추가
+#13.evolution 사용자 추가
 #14.Sendmail, dovecot 서비스 시작
 #15.재부팅
 
