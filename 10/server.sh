@@ -89,6 +89,9 @@ while true; do
     fi
     clear
 done
+Cwhostname=$(echo $mailservername | cut -c 6-)
+CwhostnameB=$(echo $mailserverBname | cut -c 6-)
+CwcurrentIP=$(echo $currentIP | cut -c -11)
 echo "호스트 이름 변경(3/15)"
 defaulthost=$(cat /etc/hosts | grep 127.0.1.1)
 currentIP=$(ifconfig | sed -n '/broadcast/p' | cut -d ' ' -f 10) > /dev/null
@@ -101,7 +104,7 @@ if [ "$is_AlreadySethost" == "1" ]; then
 else
     sed -i "/^$defaulthost/s/.*/$defaulthost\n$currentIP\t$mailservername/g" /etc/hosts
 fi
-sed -i '1,2!d' /etc/mail/local-host-names
+sed -i '3,$d' /etc/mail/local-host-names
 printf "$mailservername\n" > /etc/mail/local-host-names
 echo "named.conf.options 파일 설정(4/15)"
 is_setoptions=$(cat /etc/bind/named.conf.options | grep dnssec | cut -d ' ' -f 2)
@@ -111,44 +114,44 @@ else
     sed -i '/^\tdnssec-validation/s/.*/\tdnssec-validation no;\n\trecursion yes;\n\tallow-query { any; };/g' /etc/bind/named.conf.options
 fi
 echo "메일서버 도메인 이름 설정(5/15)"
-printf "zone \"$mailservername\" IN {\n" >>  /etc/bind/named.conf
+printf "zone \"$Cwhostname\" IN {\n" >>  /etc/bind/named.conf
 printf "\ttype master;\n" >> /etc/bind/named.conf
-printf "file \"/etc/bind/$mailservername.db\";\n" >> /etc/bind/named.conf
+printf "file \"/etc/bind/$Cwhostname.db\";\n" >> /etc/bind/named.conf
 printf "};\n" >> /etc/bind/named.conf
 printf "\n"
-printf "zone \"$mailserverBname\" IN {\n" >>  /etc/bind/named.conf
+printf "zone \"$CwhostnameB\" IN {\n" >>  /etc/bind/named.conf
 printf "\ttype master;\n" >> /etc/bind/named.conf
-printf "file \"/etc/bind/$mailserverBname.db\";\n" >> /etc/bind/named.conf
+printf "\tfile \"/etc/bind/$CwhostnameB.db\";\n" >> /etc/bind/named.conf
 printf "};\n" >> /etc/bind/named.conf
 echo "메일서버 도메인 포워드존 설정(6/15)"
-if [ -e "/etc/bind/$mailservername.db" ]; then
-    echo "이미 $mailservername.db 파일이 있습니다."
+if [ -e "/etc/bind/$Cwhostname.db" ]; then
+    echo "이미 $Cwhostname.db 파일이 있습니다."
     echo "새로운 파일로 교체합니다."
-    rm -rf /etc/bind/$mailservername.db
+    rm -rf /etc/bind/$Cwhostname.db
 fi
-if [ -e "/etc/bind/$mailserverBname.db" ]; then
-    echo "이미 $mailserverBname.db 파일이 있습니다."
+if [ -e "/etc/bind/$CwhostnameB.db" ]; then
+    echo "이미 $CwhostnameB.db 파일이 있습니다."
     echo "새로운 파일로 교체합니다."
-    rm -rf /etc/bind/$mailserverBname.db
+    rm -rf /etc/bind/$CwhostnameB.db
 fi
-touch /etc/bind/$mailservername.db
-printf "\$TTL\t3H\n" >> /etc/bind/$mailservername.db
-printf "@\tIN\tSOA\t@\troot.\t( 2 1D 1H 1W 1H)\n" >> /etc/bind/$mailservername.db
+touch /etc/bind/$Cwhostname.db
+printf "\$TTL\t3H\n" >> /etc/bind/$Cwhostname.db
+printf "@\tIN\tSOA\t@\troot.\t( 2 1D 1H 1W 1H)\n" >> /etc/bind/$Cwhostname.db
+printf "\n" >> /etc/bind/$Cwhostname.db
+printf "@\tIN\tNS\t@\n" >> /etc/bind/$Cwhostname.db
+printf "\tIN\tA\t$currentIP\n" >> /etc/bind/$Cwhostname.db
+printf "\tIN\tMX\t10\t$mailservername.\n" >> /etc/bind/$Cwhostname.db
 printf "\n" >> /etc/bind/$mailservername.db
-printf "@\tIN\tNS\t@\n" >> /etc/bind/$mailservername.db
-printf "\tIN\tA\t$currentIP\n" >> /etc/bind/$mailservername.db
-printf "\tIN\tMX\t10\t$mailservername.\n" >> /etc/bind/$mailservername.db
-printf "\n" >> /etc/bind/$mailservername.db
-printf "mail\tIN\tA\t$currentIP" >> /etc/bind/$mailservername.db
-touch /etc/bind/$mailserverBname.db
-printf "\$TTL\t3H\n" >> /etc/bind/$mailserverBname.db
-printf "@\tIN\tSOA\t@\troot.\t( 2 1D 1H 1W 1H)\n" >> /etc/bind/$mailserverBname.db
-printf "\n" >> /etc/bind/$mailserverBname.db
-printf "@\tIN\tNS\t@\n" >> /etc/bind/$mailserverBname.db
-printf "\tIN\tA\t$mailserverB_IP\n" >> /etc/bind/$mailserverBname.db
-printf "\tIN\tMX\t10\t$mailserverBname.\n" >> /etc/bind/$mailserverBname.db
-printf "\n" >> /etc/bind/$mailserverBname.db
-printf "mail\tIN\tA\t$mailserverB_IP" >> /etc/bind/$mailserverBname.db
+printf "mail\tIN\tA\t$currentIP\n" >> /etc/bind/$Cwhostname.db
+touch /etc/bind/$CwhostnameB.db
+printf "\$TTL\t3H\n" >> /etc/bind/$CwhostnameB.db
+printf "@\tIN\tSOA\t@\troot.\t( 2 1D 1H 1W 1H)\n" >> /etc/bind/$CwhostnameB.db
+printf "\n" >> /etc/bind/$CwhostnameB.db
+printf "@\tIN\tNS\t@\n" >> /etc/bind/$CwhostnameB.db
+printf "\tIN\tA\t$mailserverB_IP\n" >> /etc/bind/$CwhostnameB.db
+printf "\tIN\tMX\t10\t$mailserverBname.\n" >> /etc/bind/$CwhostnameB.db
+printf "\n" >> /etc/bind/$CwhostnameB.db
+printf "mail\tIN\tA\t$mailserverB_IP\n" >> /etc/bind/$CwhostnameB.db
 echo "방화벽 설정(7/15)"
 ufw disable
 echo "네임서버 작동 확인(8/15)"
@@ -189,9 +192,6 @@ sed -i "/^dns=/s/.*/dns=$currentIP;/g" "$networkname"
 systemctl restart NetworkManager
 systemctl enable NetworkManager
 echo "Sendmail 서버 파일 설정(10/15)"
-Cwhostname=$(echo $mailservername | cut -c 6-)
-CwhostnameB=$(echo $mailserverBname | cut -c 6-)
-CwcurrentIP=$(echo $currentIP | cut -c -11)
 sed -i "/^Cw/s/.*/Cw$Cwhostname/g" /etc/mail/sendmail.cf
 sed -i '/^O Daemon/s/, Addr=127.0.0.1/ /g' /etc/mail/sendmail.cf
 echo "/etc/mail/access 파일 수정(11/15)"

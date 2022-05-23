@@ -59,16 +59,16 @@ echo "host name setting(3/10)"
 defaulthost=$(cat /etc/hosts | grep 127.0.1.1)
 currentIP=$(ifconfig | sed -n '/broadcast/p' | cut -d ' ' -f 10) > /dev/null
 is_AlreadySethost=$(cat /etc/hosts | grep "$currentIP" | cut -c 1)
-printf "$mailservername" > /etc/hostname
+printf "$mailserverBname" > /etc/hostname
 if [ "$is_AlreadySethost" == "1" ]; then
     echo "Already Mail server has registered."
-    echo "change to $mailservername"
-    sed -i "/^$currentIP/s/.*/$currentIP\t$mailservername/g" /etc/hosts
+    echo "change to $mailserverBname"
+    sed -i "/^$currentIP/s/.*/$currentIP\t$mailserverBname/g" /etc/hosts
 else
-    sed -i "/^$defaulthost/s/.*/$defaulthost\n$currentIP\t$mailservername/g" /etc/hosts
+    sed -i "/^$defaulthost/s/.*/$defaulthost\n$currentIP\t$mailserverBname/g" /etc/hosts
 fi
-sed -i '1,2!d' /etc/mail/local-host-names
-printf "$mailservername\n" > /etc/mail/local-host-names
+sed -i '3,$d' /etc/mail/local-host-names
+printf "$mailserverBname\n" > /etc/mail/local-host-names
 echo "firewall disable(4/10)"
 ufw disable
 echo "Sendmail server file modify(5/10)"
