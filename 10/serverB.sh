@@ -97,6 +97,7 @@ systenctl enable sendmail
 systenctl restart dovecot
 systenctl enable dovecot
 echo "reboot(10/10)"
+echo "##########Auto Install Complete!##########"
 echo "reboot after 10 seconds."
 sleep 10
 reboot

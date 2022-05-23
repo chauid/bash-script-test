@@ -214,6 +214,7 @@ systenctl enable sendmail
 systenctl restart dovecot
 systenctl enable dovecot
 echo "재부팅(15/15)"
+echo "##########자동 설치 완료!##########"
 echo "10초 후 재부팅 합니다."
 sleep 10
 reboot
