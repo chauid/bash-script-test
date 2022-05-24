@@ -4,9 +4,29 @@
 #3.방화벽 설정 mariadb3306
 #4.MariaDB 비밀번호 설정
 #5.mysql 외부 접속 허용 설정
+ins_bind9=$(dpkg -l bind9 2> /dev/null | grep ii | cut -d ' ' -f 1)
+ins_bind9utils=$(dpkg -l bind9utils 2> /dev/null | grep ii | cut -d ' ' -f 1)
 ins_mariadb_S=$(dpkg -l mariadb-server 2> /dev/null | grep ii | cut -d ' ' -f 1)
 ins_mariadb_C=$(dpkg -l mariadb-client 2> /dev/null | grep ii | cut -d ' ' -f 1)
 echo "패키지 설치 확인(1/5)"
+if [ "$ins_bind9" == "ii" ]; then
+    echo "bind9 설치됨."
+else
+    echo "bind9설치 안됨."
+    read -s -n 1 -p "bind9 패키지를 설치합니다. 계속하려면 아무키나 누르세요."
+    printf "\n"
+    echo "bind9 설치중... (설치중에 터미널을 끄지 마세요.)"
+    apt-get install -y bind9 > /dev/null
+fi
+if [ "$ins_bind9utils" == "ii" ]; then
+    echo "bind9utils 설치됨."
+else
+    echo "bind9utils 설치 안됨."
+    read -s -n 1 -p "bind9utils 패키지를 설치합니다. 계속하려면 아무키나 누르세요."
+    printf "\n"
+    echo "bind9utils 설치중... (설치중에 터미널을 끄지 마세요.)"
+    apt-get install -y bind9utils > /dev/null
+fi
 if [ "$ins_mariadb_S" == "ii" ]; then
     echo "mariadb-server 설치됨."
 else
@@ -28,6 +48,8 @@ fi
 echo "#2.mariadb 서비스 시작(2/5)"
 systemctl restart mariadb
 systemctl enable mariadb
+systemctl restart named
+systemctl enable named
 StatusMariaDB=$(systemctl status mariadb | grep Active | cut -d ' ' -f 7) > /dev/null
 if [ "$StatusMariaDB" == "active" ]; then
     echo "mariadb 서비스 정상 작동중."
