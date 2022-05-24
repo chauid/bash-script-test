@@ -1,0 +1,6 @@
+#server install
+#1.패키지 설치 확인 mariadb-server, mariadb-client
+#2.mariadb 서비스 시작
+#3.방화벽 설정 mariadb3306
+#4.MariaDB 비밀번호 설정
+#5.mysql 외부 접속 허용 설정
